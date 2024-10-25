@@ -2,6 +2,7 @@ package gen_chrome
 
 type GenChild struct {
 	DateAdded    string `json:"date_added" gorm:"column:date_added"`
+	DateModified string `json:"date_modified" gorm:"column:date_modified"`
 	DateLastUsed string `json:"date_last_used" gorm:"column:date_last_used"`
 	Name         string `json:"name" gorm:"column:name"`
 	Guid         string `json:"guid" gorm:"column:guid"`
@@ -10,18 +11,12 @@ type GenChild struct {
 	Url          string `json:"url" gorm:"column:url"`
 	MetaInfo     struct {
 		PowerBookmarkMeta string `json:"power_bookmark_meta" gorm:"column:power_bookmark_meta"`
-	} `json:"meta_info" gorm:"column:meta_info"`
+	} `json:"meta_info,omitempty" gorm:"column:meta_info,omitempty"`
 }
 
 type GenFolder struct {
-	DateAdded    string     `json:"date_added" gorm:"column:date_added"`
-	DateModified string     `json:"date_modified" gorm:"column:date_modified"`
-	Children     []GenChild `json:"children,omitempty" gorm:"column:children,omitempty"`
-	DateLastUsed string     `json:"date_last_used" gorm:"column:date_last_used"`
-	Name         string     `json:"name" gorm:"column:name"`
-	Guid         string     `json:"guid" gorm:"column:guid"`
-	ID           string     `json:"id" gorm:"column:id"`
-	Type         string     `json:"type" gorm:"column:type"`
+	GenChild
+	Children []GenChild `json:"children,omitempty" gorm:"column:children,omitempty"`
 }
 
 type Gen struct {
