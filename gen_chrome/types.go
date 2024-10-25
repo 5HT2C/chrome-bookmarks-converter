@@ -10,7 +10,7 @@ type GenChild struct {
 	Type         string `json:"type" gorm:"column:type"`
 	Url          string `json:"url" gorm:"column:url"`
 	MetaInfo     struct {
-		PowerBookmarkMeta string `json:"power_bookmark_meta" gorm:"column:power_bookmark_meta"`
+		PowerBookmarkMeta string `json:"power_bookmark_meta,omitempty" gorm:"column:power_bookmark_meta,omitempty"`
 	} `json:"meta_info,omitempty" gorm:"column:meta_info,omitempty"`
 }
 

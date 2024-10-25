@@ -1,5 +1,7 @@
 package gen_edge
 
+// GenChild represents one bookmark.
+// DateModified is only used for GenFolder
 type GenChild struct {
 	DateAdded    string `json:"date_added" gorm:"column:date_added"`
 	DateModified string `json:"date_modified" gorm:"column:date_modified"`
