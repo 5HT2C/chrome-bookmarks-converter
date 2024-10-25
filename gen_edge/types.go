@@ -27,9 +27,9 @@ type GenFolder struct {
 type Gen struct {
 	Checksum string `json:"checksum" gorm:"column:checksum"`
 	Roots    struct {
-		Other       GenFolder `json:"other" gorm:"column:other"`
-		Synced      GenFolder `json:"synced" gorm:"column:synced"`
-		BookmarkBar GenFolder `json:"bookmark_bar" gorm:"column:bookmark_bar"`
+		Other       *GenFolder `json:"other,omitempty" gorm:"column:other,omitempty"`
+		Synced      *GenFolder `json:"synced,omitempty" gorm:"column:synced,omitempty"`
+		BookmarkBar *GenFolder `json:"bookmark_bar,omitempty" gorm:"column:bookmark_bar,omitempty"`
 	} `json:"roots" gorm:"column:roots"`
 	Version int `json:"version" gorm:"column:version"`
 }
