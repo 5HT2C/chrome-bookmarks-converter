@@ -6,8 +6,9 @@ import (
 )
 
 var (
-	IsSafe = true
-	logger = log.New(os.Stdout, "", log.Ldate|log.Lmicroseconds)
+	LogModeSafe = true // panic on fatal errors
+	LogLvlDebug = true
+	logger      = log.New(os.Stdout, "", log.Ldate|log.Lmicroseconds)
 )
 
 type LogLevel int
@@ -34,18 +35,37 @@ func (l LogLevel) String() string {
 	}
 }
 
-func Log(err error, lvl LogLevel, ctx string, v ...any) {
+func Log(lvl LogLevel, ctx string, v ...any) {
 	fmtLogger := "[%s] logger: %s %s\n"
 	fmtCaught := "[%s] caught: %s %s\n%s\n"
+	fmtArgs := make([]any, 0)
 
-	if IsSafe && (lvl == LogOff || lvl >= LogFuck) {
-		logger.Fatalf(fmtLogger, lvl, ctx, v, err)
+	var err error = nil
+	for _, arg := range v {
+		if err != nil {
+			fmtArgs = append(fmtArgs, v)
+			continue
+		}
+
+		switch arg.(type) {
+		case error:
+			if arg != nil {
+				err = arg.(error)
+				continue
+			}
+		}
+
+		fmtArgs = append(fmtArgs, v)
+	}
+
+	if LogModeSafe && (lvl == LogOff || lvl >= LogFuck) {
+		logger.Fatalf(fmtCaught, lvl, ctx, err, append(make([]any, len(fmtArgs)), fmtArgs...))
 		return
 	}
 
 	if err == nil {
 		logger.Printf(fmtLogger, lvl, ctx, v)
 	} else {
-		logger.Printf(fmtCaught, lvl, ctx, v, err)
+		logger.Printf(fmtCaught, lvl, ctx, err, append(make([]any, len(fmtArgs)), fmtArgs...))
 	}
 }

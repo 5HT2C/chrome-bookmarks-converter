@@ -39,7 +39,7 @@ func StringEmpty(s string) bool {
 
 func StringConditional(s, d string, c bool) string {
 	if !c {
-		Log(nil, LogInfo, "StringConditional defaulted", c, s, d)
+		Log(LogInfo, "StringConditional defaulted", c, s, d)
 		return d
 	}
 
