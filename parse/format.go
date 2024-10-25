@@ -1,7 +1,7 @@
 package parse
 
 import (
-	"github.com/5HT2C/chrome-bookmarks-converter/utils"
+	"github.com/5HT2C/chrome-bookmarks-converter/util"
 )
 
 // PopulateOrigin will try to detect whether what browser this bookmark backup is from.
@@ -60,20 +60,20 @@ func (g GenChild) AttrDefaultBar() bool {
 }
 
 func (g GenChild) AttrStr(m map[string]string) map[string]string {
-	m = utils.MapAppend(
-		m, []utils.MapCondition{
+	m = util.MapAppend(
+		m, []util.MapCondition{
 			{
-				!utils.StringEmpty(g.DateAdded),
+				!util.StringEmpty(g.DateAdded),
 				"ADD_DATE",
 				g.DateAdded,
 			},
 			{
-				!utils.StringEmpty(g.DateModified) || !utils.StringEmpty(g.DateAdded),
+				!util.StringEmpty(g.DateModified) || !util.StringEmpty(g.DateAdded),
 				"LAST_MODIFIED",
-				utils.StringOrDefault(g.DateModified, g.DateAdded),
+				util.StringOrDefault(g.DateModified, g.DateAdded),
 			},
 			{
-				!utils.StringEmpty(g.DateLastUsed),
+				!util.StringEmpty(g.DateLastUsed),
 				"LAST_VISIT",
 				g.DateLastUsed,
 			},

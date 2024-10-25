@@ -7,7 +7,7 @@ import (
 	"strings"
 
 	"github.com/5HT2C/chrome-bookmarks-converter/parse"
-	"github.com/5HT2C/chrome-bookmarks-converter/utils"
+	"github.com/5HT2C/chrome-bookmarks-converter/util"
 	"github.com/virtualtam/netscape-go/v2"
 )
 
@@ -18,7 +18,7 @@ var (
 
 func main() {
 	flag.Parse()
-	utils.IsSafe = *flagSafe
+	util.IsSafe = *flagSafe
 
 	entries, _ := os.ReadDir(".")
 
