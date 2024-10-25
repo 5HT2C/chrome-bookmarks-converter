@@ -7,10 +7,10 @@ import (
 	"github.com/virtualtam/netscape-go/v2"
 )
 
-func (g Gen) ToNetscape() netscape.Document {
+func (g Gen) ToNetscape() *netscape.Document {
 	g.PopulateOrigin()
 
-	return netscape.Document{
+	return &netscape.Document{
 		Title: fmt.Sprintf("Bookmarks-%s-%s", g.Origin, g.Checksum),
 		Root: netscape.Folder{
 			Subfolders: g.Roots.ToNetscape(),
