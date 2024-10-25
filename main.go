@@ -13,19 +13,23 @@ import (
 
 var (
 	flagProd = flag.Bool("prod", false, "Enables only test mode")
-	flagSafe = flag.Bool("unsafe", false, "Ignores errors and attempts to continue")
+	flagSegf = flag.Bool("unsafe", false, "Ignores errors and attempts to continue")
 	flagInfo = flag.Bool("quiet", false, "Disables debug logging")
 )
 
 func main() {
 	flag.Parse()
-	util.LogModeSafe = *flagSafe
-	util.LogLvlDebug = *flagInfo
+	util.LoggerPanic = !*flagSegf
+	util.LoggerQuiet = *flagInfo
 
 	entries, _ := os.ReadDir(".")
 
 	for _, f := range entries {
 		if *flagProd || (strings.HasPrefix(f.Name(), "test_") && strings.HasSuffix(f.Name(), ".json")) {
+			if f.IsDir() {
+				continue
+			}
+
 			if b, err := os.ReadFile(f.Name()); err == nil {
 				var bookmarks *parse.Gen
 

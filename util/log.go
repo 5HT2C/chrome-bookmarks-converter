@@ -6,8 +6,8 @@ import (
 )
 
 var (
-	LogModeSafe = true // panic on fatal errors
-	LogLvlDebug = true
+	LoggerPanic = true // panic on fatal errors
+	LoggerQuiet = true
 	logger      = log.New(os.Stdout, "", log.Ldate|log.Lmicroseconds)
 )
 
@@ -36,7 +36,7 @@ func (l LogLevel) String() string {
 }
 
 func Log(lvl LogLevel, ctx string, v ...any) {
-	if !LogLvlDebug && lvl == LogInfo {
+	if LoggerQuiet && lvl == LogInfo {
 		return
 	}
 
@@ -62,8 +62,8 @@ func Log(lvl LogLevel, ctx string, v ...any) {
 		fmtArgs = append(fmtArgs, v)
 	}
 
-	if LogModeSafe && (lvl == LogOff || lvl >= LogFuck) {
-		logger.Fatalf(fmtCaught, lvl, ctx, err, append(make([]any, len(fmtArgs)), fmtArgs...))
+	if LoggerPanic && (lvl == LogOff || lvl >= LogFuck) {
+		logger.Panicf(fmtCaught, lvl, ctx, err, append(make([]any, len(fmtArgs)), fmtArgs...))
 		return
 	}
 
