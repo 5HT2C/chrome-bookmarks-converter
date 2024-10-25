@@ -12,42 +12,24 @@ type GenChild struct {
 	Source       string `json:"source" gorm:"column:source"`
 }
 
+type GenFolder struct {
+	DateAdded    string     `json:"date_added" gorm:"column:date_added"`
+	DateModified string     `json:"date_modified" gorm:"column:date_modified"`
+	Children     []GenChild `json:"children,omitempty" gorm:"column:children,omitempty"`
+	DateLastUsed string     `json:"date_last_used" gorm:"column:date_last_used"`
+	Name         string     `json:"name" gorm:"column:name"`
+	Guid         string     `json:"guid" gorm:"column:guid"`
+	ID           string     `json:"id" gorm:"column:id"`
+	Source       string     `json:"source" gorm:"column:source"`
+	Type         string     `json:"type" gorm:"column:type"`
+}
+
 type Gen struct {
 	Checksum string `json:"checksum" gorm:"column:checksum"`
 	Roots    struct {
-		Other struct {
-			DateAdded    string     `json:"date_added" gorm:"column:date_added"`
-			DateModified string     `json:"date_modified" gorm:"column:date_modified"`
-			Children     []GenChild `json:"children" gorm:"column:children"`
-			DateLastUsed string     `json:"date_last_used" gorm:"column:date_last_used"`
-			Name         string     `json:"name" gorm:"column:name"`
-			Guid         string     `json:"guid" gorm:"column:guid"`
-			ID           string     `json:"id" gorm:"column:id"`
-			Source       string     `json:"source" gorm:"column:source"`
-			Type         string     `json:"type" gorm:"column:type"`
-		} `json:"other" gorm:"column:other"`
-		Synced struct {
-			DateAdded    string     `json:"date_added" gorm:"column:date_added"`
-			DateModified string     `json:"date_modified" gorm:"column:date_modified"`
-			Children     []GenChild `json:"children" gorm:"column:children"`
-			DateLastUsed string     `json:"date_last_used" gorm:"column:date_last_used"`
-			Name         string     `json:"name" gorm:"column:name"`
-			Guid         string     `json:"guid" gorm:"column:guid"`
-			ID           string     `json:"id" gorm:"column:id"`
-			Source       string     `json:"source" gorm:"column:source"`
-			Type         string     `json:"type" gorm:"column:type"`
-		} `json:"synced" gorm:"column:synced"`
-		BookmarkBar struct {
-			DateAdded    string     `json:"date_added" gorm:"column:date_added"`
-			DateModified string     `json:"date_modified" gorm:"column:date_modified"`
-			Children     []GenChild `json:"children" gorm:"column:children"`
-			DateLastUsed string     `json:"date_last_used" gorm:"column:date_last_used"`
-			Name         string     `json:"name" gorm:"column:name"`
-			Guid         string     `json:"guid" gorm:"column:guid"`
-			ID           string     `json:"id" gorm:"column:id"`
-			Source       string     `json:"source" gorm:"column:source"`
-			Type         string     `json:"type" gorm:"column:type"`
-		} `json:"bookmark_bar" gorm:"column:bookmark_bar"`
+		Other       GenFolder `json:"other" gorm:"column:other"`
+		Synced      GenFolder `json:"synced" gorm:"column:synced"`
+		BookmarkBar GenFolder `json:"bookmark_bar" gorm:"column:bookmark_bar"`
 	} `json:"roots" gorm:"column:roots"`
 	Version int `json:"version" gorm:"column:version"`
 }
