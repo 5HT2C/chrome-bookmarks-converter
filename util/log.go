@@ -36,6 +36,10 @@ func (l LogLevel) String() string {
 }
 
 func Log(lvl LogLevel, ctx string, v ...any) {
+	if !LogLvlDebug && lvl == LogInfo {
+		return
+	}
+
 	fmtLogger := "[%s] logger: %s %s\n"
 	fmtCaught := "[%s] caught: %s %s\n%s\n"
 	fmtArgs := make([]any, 0)

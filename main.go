@@ -14,7 +14,7 @@ import (
 var (
 	flagProd = flag.Bool("prod", false, "Enables only test mode")
 	flagSafe = flag.Bool("unsafe", false, "Ignores errors and attempts to continue")
-	flagInfo = flag.Bool("debug", true, "Enables debug logging")
+	flagInfo = flag.Bool("quiet", false, "Disables debug logging")
 )
 
 func main() {
