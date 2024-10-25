@@ -3,7 +3,6 @@ package parse
 import (
 	"fmt"
 
-	"github.com/5HT2C/chrome-bookmarks-converter/utils"
 	"github.com/virtualtam/netscape-go/v2"
 )
 
@@ -44,8 +43,6 @@ func (g GenChild) Description() string {
 
 func (g GenChild) ToNetscape() netscape.Bookmark {
 	return netscape.Bookmark{
-		CreatedAt:   utils.StringToTime(g.DateAdded),
-		UpdatedAt:   utils.StringToTime(g.DateModified),
 		Title:       g.Name,
 		URL:         g.Url,
 		Description: g.Description(),
@@ -66,8 +63,6 @@ func (g *GenFolder) Bookmarks() []netscape.Bookmark {
 
 func (g *GenFolder) ToNetscape() netscape.Folder {
 	return netscape.Folder{
-		CreatedAt:   utils.StringToTime(g.DateAdded),
-		UpdatedAt:   utils.StringToTime(g.DateModified),
 		Description: g.Description(),
 		Name:        g.Name,
 		Attributes:  g.AttrStr(nil),
