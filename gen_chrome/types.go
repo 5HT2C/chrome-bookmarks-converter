@@ -1,5 +1,7 @@
 package gen_chrome
 
+// GenChild represents one bookmark.
+// DateModified is only used for GenFolder
 type GenChild struct {
 	DateAdded    string `json:"date_added" gorm:"column:date_added"`
 	DateModified string `json:"date_modified" gorm:"column:date_modified"`
@@ -9,6 +11,8 @@ type GenChild struct {
 	ID           string `json:"id" gorm:"column:id"`
 	Type         string `json:"type" gorm:"column:type"`
 	Url          string `json:"url" gorm:"column:url"`
+	Source       string `json:"source,omitempty" gorm:"column:source,omitempty"`
+	ShowIcon     bool   `json:"show_icon,omitempty" gorm:"column:show_icon,omitempty"`
 	MetaInfo     struct {
 		PowerBookmarkMeta string `json:"power_bookmark_meta,omitempty" gorm:"column:power_bookmark_meta,omitempty"`
 	} `json:"meta_info,omitempty" gorm:"column:meta_info,omitempty"`
