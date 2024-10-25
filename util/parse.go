@@ -18,6 +18,7 @@ func MapAppend(m map[string]string, e ...MapCondition) map[string]string {
 
 	for _, c := range e {
 		if c.Condition {
+			Log(LogInfo, "MapAppend() created", c)
 			m[c.K] = c.V
 		}
 	}
