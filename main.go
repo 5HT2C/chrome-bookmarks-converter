@@ -25,6 +25,8 @@ func main() {
 	entries, _ := os.ReadDir(".")
 
 	for _, f := range entries {
+		util.Log(util.LogInfo, "main() got dir child", f)
+
 		if *flagProd || (strings.HasPrefix(f.Name(), "test_") && strings.HasSuffix(f.Name(), ".json")) {
 			if f.IsDir() {
 				continue
@@ -34,23 +36,24 @@ func main() {
 				var bookmarks *parse.Gen
 
 				if err := json.Unmarshal(b, &bookmarks); err != nil {
-					panic(err)
+					util.Log(util.LogFuck, "main() json.Unmarshal()", err, string(b))
 				}
 
 				m, err := netscape.Marshal(bookmarks.ToNetscape())
 				if err != nil {
-					panic(err)
+					util.Log(util.LogFuck, "main() netscape.Marshal()", err, bookmarks)
 				}
 
-				//fmt.Printf("TODO: %s\n", f.Name())
-				//fmt.Print(string(m))
+				util.Log(util.LogWarn, "main() marshalled file", f)
 
 				if err := os.WriteFile(strings.TrimSuffix(f.Name(), ".json")+".html", m, 0644); err != nil {
-					panic(err)
+					util.Log(util.LogWarn, "main() os.WriteFile()", err, f.Name())
 				}
 			} else {
-				panic(err)
+				util.Log(util.LogWarn, "main() os.ReadFile()", err, f.Name())
 			}
+		} else {
+			util.Log(util.LogInfo, "main() skipped", f.Name())
 		}
 	}
 }
