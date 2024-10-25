@@ -68,14 +68,9 @@ func (g GenChild) AttrStr(m map[string]string) map[string]string {
 				g.DateAdded,
 			},
 			{
-				!utils.StringEmpty(g.DateModified),
+				!utils.StringEmpty(g.DateModified) || !utils.StringEmpty(g.DateAdded),
 				"LAST_MODIFIED",
-				g.DateModified,
-			},
-			{
-				utils.StringEmpty(g.DateModified) && !utils.StringEmpty(g.DateAdded),
-				"LAST_MODIFIED",
-				g.DateAdded,
+				utils.StringOrDefault(g.DateModified, g.DateAdded),
 			},
 			{
 				!utils.StringEmpty(g.DateLastUsed),
