@@ -33,6 +33,17 @@ func (g *Gen) ToNetscape() *netscape.Document {
 	}
 }
 
+func (g *Gen) CollectBookmarks() []netscape.Bookmark {
+	bookmarks := make([]netscape.Bookmark, 0)
+
+	for _, folder := range *g.PopulateRoots() {
+		folder.Children = append(make([]GenChild, 0), folder.Children...) // unnecessary imo
+		bookmarks = append(bookmarks, folder.ToNetscapeBookmarks()...)    // we should avoid calling this twice, ideally, this is not good
+	}
+
+	return bookmarks
+}
+
 func (g GenOrigin) String() string {
 	switch g {
 	case GenOriginUnknown:
