@@ -11,7 +11,7 @@ func (g *Gen) ToNetscape() netscape.Document {
 	return netscape.Document{
 		Title: fmt.Sprintf("Bookmarks-%v-%s", g.Version, g.Checksum),
 		Root: netscape.Folder{
-			Subfolders: g.Roots.ToNetScape(),
+			Subfolders: g.Roots.ToNetscape(),
 		},
 	}
 }
@@ -25,7 +25,7 @@ func (g GenChild) Description() string {
 	return fmt.Sprintf("%s%s%s", g.Type, sep, g.Guid)
 }
 
-func (g GenChild) ToNetScape() netscape.Bookmark {
+func (g GenChild) ToNetscape() netscape.Bookmark {
 	return netscape.Bookmark{
 		CreatedAt:   utils.StringToTime(g.DateAdded),
 		UpdatedAt:   utils.StringToTime(g.DateModified),
@@ -41,13 +41,13 @@ func (g GenChild) ToNetScape() netscape.Bookmark {
 func (g *GenFolder) Bookmarks() []netscape.Bookmark {
 	bookmarks := make([]netscape.Bookmark, 0)
 	for _, child := range g.Children {
-		bookmarks = append(bookmarks, child.ToNetScape())
+		bookmarks = append(bookmarks, child.ToNetscape())
 	}
 
 	return bookmarks
 }
 
-func (g *GenFolder) ToNetScape() netscape.Folder {
+func (g *GenFolder) ToNetscape() netscape.Folder {
 	return netscape.Folder{
 		CreatedAt:   utils.StringToTime(g.DateAdded),
 		UpdatedAt:   utils.StringToTime(g.DateModified),
@@ -58,12 +58,12 @@ func (g *GenFolder) ToNetScape() netscape.Folder {
 	}
 }
 
-func (g *GenRoot) ToNetScape() []netscape.Folder {
+func (g *GenRoot) ToNetscape() []netscape.Folder {
 	netSubFolders := make([]netscape.Folder, 0)
 
 	for _, folder := range []*GenFolder{g.BookmarkBar, g.Synced, g.Other} {
 		if folder != nil {
-			netSubFolders = append(netSubFolders, folder.ToNetScape())
+			netSubFolders = append(netSubFolders, folder.ToNetscape())
 		}
 	}
 
