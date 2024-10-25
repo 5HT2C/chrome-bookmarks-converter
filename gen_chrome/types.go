@@ -19,12 +19,14 @@ type GenFolder struct {
 	Children []GenChild `json:"children,omitempty" gorm:"column:children,omitempty"`
 }
 
+type GenRoot struct {
+	Other       *GenFolder `json:"other,omitempty" gorm:"column:other,omitempty"`
+	Synced      *GenFolder `json:"synced,omitempty" gorm:"column:synced,omitempty"`
+	BookmarkBar *GenFolder `json:"bookmark_bar,omitempty" gorm:"column:bookmark_bar,omitempty"`
+}
+
 type Gen struct {
-	Checksum string `json:"checksum" gorm:"column:checksum"`
-	Roots    struct {
-		Other       *GenFolder `json:"other,omitempty" gorm:"column:other,omitempty"`
-		Synced      *GenFolder `json:"synced,omitempty" gorm:"column:synced,omitempty"`
-		BookmarkBar *GenFolder `json:"bookmark_bar,omitempty" gorm:"column:bookmark_bar,omitempty"`
-	} `json:"roots" gorm:"column:roots"`
-	Version int `json:"version" gorm:"column:version"`
+	Checksum string  `json:"checksum" gorm:"column:checksum"`
+	Roots    GenRoot `json:"roots" gorm:"column:roots"`
+	Version  int     `json:"version" gorm:"column:version"`
 }
