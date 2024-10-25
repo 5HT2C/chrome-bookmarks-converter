@@ -1,4 +1,4 @@
-package gen_chrome
+package parse
 
 // GenChild represents one bookmark.
 // DateModified is only used for GenFolder
@@ -29,8 +29,19 @@ type GenRoot struct {
 	BookmarkBar *GenFolder `json:"bookmark_bar,omitempty" gorm:"column:bookmark_bar,omitempty"`
 }
 
+// GenOrigin is true for Chrome and false for Edge
+type GenOrigin int
+
+const (
+	GenOriginUnknown GenOrigin = iota
+	GenOriginChrome
+	GenOriginEdge
+	GenOriginOther
+)
+
 type Gen struct {
 	Checksum string  `json:"checksum" gorm:"column:checksum"`
 	Roots    GenRoot `json:"roots" gorm:"column:roots"`
 	Version  int     `json:"version" gorm:"column:version"`
+	Origin   GenOrigin
 }

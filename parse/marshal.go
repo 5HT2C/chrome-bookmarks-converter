@@ -1,4 +1,4 @@
-package gen_chrome
+package parse
 
 import (
 	"fmt"
@@ -7,12 +7,29 @@ import (
 	"github.com/virtualtam/netscape-go/v2"
 )
 
-func (g *Gen) ToNetscape() netscape.Document {
+func (g Gen) ToNetscape() netscape.Document {
+	g.PopulateOrigin()
+
 	return netscape.Document{
-		Title: fmt.Sprintf("Bookmarks-%v-%s", g.Version, g.Checksum),
+		Title: fmt.Sprintf("Bookmarks-%s-%s", g.Origin, g.Checksum),
 		Root: netscape.Folder{
 			Subfolders: g.Roots.ToNetscape(),
 		},
+	}
+}
+
+func (g GenOrigin) String() string {
+	switch g {
+	case GenOriginUnknown:
+		fallthrough
+	case GenOriginChrome:
+		return "chrome"
+	case GenOriginEdge:
+		return "edge"
+	case GenOriginOther:
+		return "other"
+	default:
+		return "unknown"
 	}
 }
 
@@ -58,7 +75,7 @@ func (g *GenFolder) ToNetscape() netscape.Folder {
 	}
 }
 
-func (g *GenRoot) ToNetscape() []netscape.Folder {
+func (g GenRoot) ToNetscape() []netscape.Folder {
 	netSubFolders := make([]netscape.Folder, 0)
 
 	for _, folder := range []*GenFolder{g.BookmarkBar, g.Synced, g.Other} {
