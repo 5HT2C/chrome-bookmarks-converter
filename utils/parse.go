@@ -27,8 +27,25 @@ func MapAppend(m map[string]string, e ...MapCondition) map[string]string {
 
 func StringToTime(s string) time.Time {
 	if sec, err := strconv.ParseInt(s, 10, 64); err != nil {
-		return time.Unix(0, 0)
+		return time.Time{}
 	} else {
 		return time.Unix(sec, 0)
 	}
+}
+
+func StringEmpty(s string) bool {
+	return len(s) == 0 || s == "0"
+}
+
+func StringConditional(s, d string, c bool) string {
+	if !c {
+		Log(nil, LogInfo, "StringConditional defaulted", c, s, d)
+		return d
+	}
+
+	return s
+}
+
+func StringOrDefault(s, d string) string {
+	return StringConditional(s, d, !StringEmpty(s))
 }
