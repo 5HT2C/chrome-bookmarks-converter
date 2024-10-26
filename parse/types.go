@@ -1,5 +1,13 @@
 package parse
 
+import (
+	"github.com/virtualtam/netscape-go/v2"
+)
+
+type GenMeta struct {
+	PowerBookmarkMeta string `json:"power_bookmark_meta,omitempty" gorm:"column:power_bookmark_meta,omitempty"`
+}
+
 // GenChild represents one bookmark.
 // DateModified is only used for GenFolder
 type GenChild struct {
@@ -14,9 +22,7 @@ type GenChild struct {
 	Url          string     `json:"url" gorm:"column:url"`
 	Source       string     `json:"source,omitempty" gorm:"column:source,omitempty"`
 	ShowIcon     bool       `json:"show_icon,omitempty" gorm:"column:show_icon,omitempty"`
-	MetaInfo     struct {
-		PowerBookmarkMeta string `json:"power_bookmark_meta,omitempty" gorm:"column:power_bookmark_meta,omitempty"`
-	} `json:"meta_info,omitempty" gorm:"column:meta_info,omitempty"`
+	MetaInfo     GenMeta    `json:"meta_info,omitempty" gorm:"column:meta_info,omitempty"`
 }
 
 type GenFolder struct {
@@ -37,10 +43,13 @@ const (
 	GenOriginUnknown GenOrigin = iota
 	GenOriginChrome
 	GenOriginEdge
+	GenOriginImported
 	GenOriginOther
 )
 
 type GenSubfolders []*GenFolder
+type GenChildren []*GenChild
+type GenBookmarks []netscape.Bookmark
 
 type Gen struct {
 	Version  int     `json:"version" gorm:"column:version"`
