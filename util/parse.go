@@ -38,6 +38,18 @@ func StringEmpty(s string) bool {
 	return len(s) == 0 || s == "0"
 }
 
+func StringEmptyScore(s string) int64 {
+	if StringEmpty(s) {
+		return 0
+	}
+
+	if n, err := strconv.ParseInt(s, 10, 64); err == nil {
+		return n
+	}
+
+	return int64(len(s))
+}
+
 func StringConditional(s, d string, c bool) string {
 	if !c {
 		Log(LogInfo, "StringConditional defaulted", c, s, d)
