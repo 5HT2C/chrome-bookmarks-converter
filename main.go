@@ -24,12 +24,31 @@ func main() {
 	util.LoggerPanic = !*flagSegf
 	util.LoggerQuiet = *flagInfo
 
-	entries, _ := os.ReadDir(".")
-	bkFolded := make([]netscape.Bookmark, 0)
-	bkExport := fmt.Sprintf("exported-bookmarks-%v.json", time.Now().UnixMilli())
+	bkFilePrefix := "exported-bookmarks"
+	bkTimeSuffix := fmt.Sprintf("%v", time.Now().UnixMilli())
+	bkFileExport := func(s, ext string) string {
+		parts := []string{bkFilePrefix}
+		if !util.StringEmpty(s) {
+			parts = append(parts, s)
+		}
+		parts = append(parts, bkTimeSuffix)
 
+		return fmt.Sprintf(
+			"%s.%s",
+			strings.Join(parts, "-"),
+			ext,
+		)
+	}
+
+	bkFolded, bkUnique, bkExists, bkPrefer :=
+		make(parse.GenChildren, 0),
+		make(parse.GenChildren, 0),
+		make(parse.GenChildren, 0),
+		make(parse.GenChildren, 0)
+
+	entries, _ := os.ReadDir(".")
 	for _, f := range entries {
-		util.Log(util.LogInfo, "main() got dir child", f)
+		util.Log(util.LogInfo, "main() got dir child", f.Name())
 
 		if *flagProd || (strings.HasPrefix(f.Name(), "test_") && strings.HasSuffix(f.Name(), ".json")) {
 			if f.IsDir() {
@@ -37,24 +56,15 @@ func main() {
 			}
 
 			if b, err := os.ReadFile(f.Name()); err == nil {
-				var bkParsed *parse.Gen
+				var bkGenRoot *parse.Gen
 
-				if err := json.Unmarshal(b, &bkParsed); err != nil {
+				if err := json.Unmarshal(b, &bkGenRoot); err != nil {
 					util.Log(util.LogFuck, "main() json.Unmarshal()", err, string(b))
 				}
 
-				m, err := netscape.Marshal(bkParsed.ToNetscape())
-				if err != nil {
-					util.Log(util.LogFuck, "main() netscape.Marshal()", err, bkParsed)
-				}
-
-				bkFolded = append(bkFolded, bkParsed.CollectBookmarks()...)
-
-				util.Log(util.LogWarn, "main() marshalled file", f)
-
-				if err := os.WriteFile(strings.TrimSuffix(f.Name(), ".json")+".html", m, 0644); err != nil {
-					util.Log(util.LogWarn, "main() os.WriteFile()", err, f.Name())
-				}
+				bkParsed := bkGenRoot.ToNetscape()
+				bkFolded = append(bkFolded, bkGenRoot.CollectChildren()...)
+				writeExport(bkParsed, bkFolded, strings.TrimSuffix(f.Name(), ".json")+".html")
 			} else {
 				util.Log(util.LogWarn, "main() os.ReadFile()", err, f.Name())
 			}
@@ -63,13 +73,54 @@ func main() {
 		}
 	}
 
-	if j, err := json.MarshalIndent(bkFolded, "", "    "); err != nil {
-		util.Log(util.LogFuck, "main() json.Unmarshal() bkFolded", err, bkFolded)
-	} else {
-		if err := os.WriteFile(bkExport, j, 0644); err != nil {
-			util.Log(util.LogWarn, "main() os.WriteFile()", err, bkExport)
-		} else {
+	bkUnique, bkExists, bkPrefer = (&bkFolded).CollectUnique()
+	writeChild(bkUnique, bkFileExport("unique", "json"))
+	writeChild(bkExists, bkFileExport("exists", "json"))
+	writeChild(bkPrefer, bkFileExport("prefer", "json"))
 
+	bkFolded = make(parse.GenChildren, 0)
+	bkFolded = append(bkFolded, bkUnique...)
+	bkFolded = append(bkFolded, bkPrefer...)
+	bkParsed := (&bkFolded).ToNetscapeUnique()
+
+	writeExport(bkParsed, bkFolded, bkFileExport("", "html"))
+}
+
+func writeExport(bkParsed *netscape.Document, bkFolded parse.GenChildren, bkExport string) {
+	if len(bkFolded) == 0 {
+		util.Log(util.LogWarn, "main() writeExport() skipped", bkExport, bkParsed)
+		return
+	}
+
+	m, err := netscape.Marshal(bkParsed)
+	if err != nil {
+		util.Log(util.LogFuck, "main() writeExport() netscape.Marshal()", err, bkParsed)
+	} else {
+		util.Log(util.LogWarn, "main() writeExport() marshalled", bkExport, len(bkFolded))
+
+		if err := os.WriteFile(bkExport, m, 0644); err != nil {
+			util.Log(util.LogWarn, "main() writeExport() write failed", err, bkExport)
+		} else {
+			util.Log(util.LogInfo, "main() writeExport() finished", bkExport, len(bkFolded))
+		}
+	}
+}
+
+func writeChild(bkFolded parse.GenChildren, bkExport string) {
+	if len(bkFolded) == 0 {
+		util.Log(util.LogWarn, "main() writeChild() skipped", bkExport)
+		return
+	}
+
+	if j, err := json.MarshalIndent(&bkFolded, "", "    "); err != nil {
+		util.Log(util.LogFuck, "main() writeChild() json.MarshalIndent()", err, &bkFolded)
+	} else {
+		util.Log(util.LogWarn, "main() writeChild() marshalled", bkExport, len(bkFolded))
+
+		if err := os.WriteFile(bkExport, j, 0644); err != nil {
+			util.Log(util.LogWarn, "main() writeChild() write failed", err, bkExport)
+		} else {
+			util.Log(util.LogInfo, "main() writeChild() finished", bkExport, len(bkFolded))
 		}
 	}
 }
